@@ -16,10 +16,22 @@ export default class Snake {
     // bind class methods
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
+    this.getPosition = this.getPosition.bind(this);
   }
-  update() {
+  getPosition() {
+    return {x: this.position.x, y: this.position.y};
+  }
+  update(input) {
     var x = this.body[0].x;
     var y = this.body[0].y;
+    // Prevent turning back on ourselves
+    if(!(this.direction === 'right' && this.direction === 'left'
+    || this.direction === 'left' && this.direction === 'right'
+    || this.direction === 'up' && this.direction === 'down'
+    || this.direction === 'down' && this.direction === 'up'
+  ))
+    this.direction = input.direction;
+    //Apply our move
     switch(this.direction) {
       case 'right':
         x++;
@@ -43,9 +55,14 @@ export default class Snake {
     this.body.pop();
     this.body.unshift({x: x, y: y});
     // Did we eat ourselves?
+    for(var i =i; i < this.body.length; i++) {
+      if(x === this.body[i].x && y === this.body[i].y) {
+        return true;
+      }
+    }
     // Did we eat food?
     // Do we need to grow?
-
+    return false;
   }
   /** @function render
     * Render the snake
